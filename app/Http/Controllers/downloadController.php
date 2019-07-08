@@ -37,18 +37,28 @@ class downloadController extends Controller
         }
         $dl->setDownloadPath('../public/converted');
 
-        
+        function convertToReadableSize($size){
+            $base = log($size) / log(1024);
+            $suffix = array("", "KB", "MB", "GB", "TB");
+            $f_base = floor($base);
+            return round(pow(1024, $base - floor($base)), 1) . $suffix[$f_base];
+          }
         
         try {
             $video = $dl->download($url);
-            if(!empty($video)){
+            if($format=='.mp4'){
+                $size = convertToReadableSize($video->get('filesize'));
+            }else{
+                $size = $video->get('filesize');
+            }
+          if(!empty($video)){
                 $inHistory = new Reqhistory;
                 $inHistory->URl = $url;
                 $inHistory->format = $format;
                 $inHistory->thumbnail = $video->get('thumbnail');
                 $inHistory->title = $video->getTitle();
                 $inHistory->name = $video->get('_filename');
-                $inHistory->size = $video->get('filesize');
+                $inHistory->size = $size;
                 $inHistory->save();
                 return redirect()->route('makingDecision',['id'=>$inHistory->id]);
             }
@@ -73,4 +83,5 @@ class downloadController extends Controller
        // unlink("../public/converted/$name");
         return redirect()->route('index');
     }*/
+    
 }
