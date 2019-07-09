@@ -1,6 +1,7 @@
 @extends('layouts.layout')
 @section('content')
     <div class="jumbotron">
+    <h1>Your requested video</h1>
      <div class="media">
         <img class="align-self-center mr-3" src="{{$getInfo['thumbnail']}}" alt="{{$getInfo['title']}}" width="200" height="120">
             <div class="media-body">

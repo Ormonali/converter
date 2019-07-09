@@ -24,10 +24,12 @@ class downloadController extends Controller
        
         if($format!='.mp4'){
             $dl = new YoutubeDl([
-                'continue' => true,
                 'extract-audio' => true,
                 'audio-format' => 'mp3',
                 'audio-quality' => 0, 
+                'prefer-ffmpeg'=>true,
+                'ffmpeg-location' => '/usr/bin/ffmpeg',
+                'output' => '%(title)s.%(ext)s',
             ]);
         }else{
             $dl = new YoutubeDl([
@@ -36,7 +38,7 @@ class downloadController extends Controller
             ]);
         }
         $dl->setDownloadPath('../public/converted');
-
+        $dl->setBinPath('/usr/local/bin/youtube-dl');
         function convertToReadableSize($size){
             $base = log($size) / log(1024);
             $suffix = array("", "KB", "MB", "GB", "TB");
@@ -70,7 +72,7 @@ class downloadController extends Controller
         } catch (CopyrightException $e) {
             // The YouTube account associated with this video has been terminated due to multiple third-party notifications of copyright infringement
         } catch (\Exception $e) {
-            // Failed to download
+           return redirect()->back();
         }
     }
 
